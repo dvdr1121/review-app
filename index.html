@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>口コミサポート（段階式）</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body {
+        font-family: "Segoe UI", "Hiragino Sans", sans-serif;
+        background: #f6f7f9;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 600px;
+        margin: 40px auto;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        padding: 24px;
+      }
+      .hidden {
+        display: none;
+      }
+      h1 {
+        text-align: center;
+        font-size: 1.5em;
+        color: #333;
+      }
+      .field {
+        margin: 20px 0;
+      }
+      label {
+        font-weight: bold;
+      }
+      select,
+      textarea {
+        width: 100%;
+        font-size: 1em;
+        margin-top: 8px;
+        padding: 8px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+      }
+      button {
+        background: #0078ff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 16px;
+        font-size: 1em;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #005fcc;
+      }
+      .actions {
+        text-align: center;
+        margin-top: 24px;
+      }
+      .stars {
+        font-size: 1.2em;
+        color: #ffb400;
+        margin-top: 5px;
+      }
+      .output {
+        width: 100%;
+        min-height: 100px;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 1em;
+        resize: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main class="container">
+      <h1>本日のご来店ありがとうございました！</h1>
+
+      <!-- STEP 1: 星評価 -->
+      <section id="step1">
+        <h2>1. 各項目を評価してください</h2>
+
+        <div class="field">
+          <label>接客：</label>
+          <select id="rating_service">
+            <option value="5">★★★★★ とても良い</option>
+            <option value="4">★★★★ 良い</option>
+            <option value="3">★★★ 普通</option>
+            <option value="2">★★ やや不満</option>
+            <option value="1">★ 不満</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>技術：</label>
+          <select id="rating_skill">
+            <option value="5">★★★★★ とても良い</option>
+            <option value="4">★★★★ 良い</option>
+            <option value="3">★★★ 普通</option>
+            <option value="2">★★ やや不満</option>
+            <option value="1">★ 不満</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>お店の雰囲気：</label>
+          <select id="rating_atmosphere">
+            <option value="5">★★★★★ とても良い</option>
+            <option value="4">★★★★ 良い</option>
+            <option value="3">★★★ 普通</option>
+            <option value="2">★★ やや不満</option>
+            <option value="1">★ 不満</option>
+          </select>
+        </div>
+
+        <div class="actions">
+          <button onclick="nextStep()">次へ</button>
+        </div>
+      </section>
+
+      <!-- STEP 2: 一言コメント -->
+      <section id="step2" class="hidden">
+        <h2>2. 特に良かったことを一言で教えてください</h2>
+        <textarea
+          id="comment"
+          rows="3"
+          placeholder="例：カラーの仕上がりがとても綺麗で丁寧でした！"
+        ></textarea>
+
+        <div class="actions">
+          <button onclick="prevStep()">戻る</button>
+          <button onclick="generateReview()">口コミを作る</button>
+        </div>
+      </section>
+
+      <!-- STEP 3: AI生成結果 -->
+      <section id="step3" class="hidden">
+        <h2>3. AIが作成した口コミ文</h2>
+        <textarea id="resultText" class="output" readonly></textarea>
+
+        <div class="actions">
+          <button onclick="copyText()">コピー</button>
+          <a
+            id="hotpepperLink"
+            class="link-button"
+            href="#"
+            target="_blank"
+            rel="noopener"
+            ><button>ホットペッパーを開く</button></a
+          >
+        </div>
+
+        <div class="actions">
+          <button onclick="restart()">もう一度</button>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      function nextStep() {
+        document.getElementById("step1").classList.add("hidden");
+        document.getElementById("step2").classList.remove("hidden");
+      }
+
+      function prevStep() {
+        document.getElementById("step2").classList.add("hidden");
+        document.getElementById("step1").classList.remove("hidden");
+      }
+
+      function restart() {
+        document.getElementById("step3").classList.add("hidden");
+        document.getElementById("step1").classList.remove("hidden");
+        document.getElementById("resultText").value = "";
+        document.getElementById("comment").value = "";
+      }
+
+      async function generateReview() {
+        const service = document.getElementById("rating_service").value;
+        const skill = document.getElementById("rating_skill").value;
+        const atmosphere = document.getElementById("rating_atmosphere").value;
+        const comment = document.getElementById("comment").value.trim();
+        const resultBox = document.getElementById("resultText");
+
+        resultBox.value = "AIが口コミを作成中です…";
+
+        try {
+          const response = await fetch(
+            "http://127.0.0.1:5000/generate-review",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                rating_service: service,
+                rating_skill: skill,
+                rating_atmosphere: atmosphere,
+                comment: comment,
+              }),
+            }
+          );
+
+          if (!response.ok) {
+            resultBox.value = "エラーが発生しました。";
+            return;
+          }
+
+          const data = await response.json();
+          resultBox.value = data.review || "口コミ文を生成できませんでした。";
+          document.getElementById("step2").classList.add("hidden");
+          document.getElementById("step3").classList.remove("hidden");
+        } catch (err) {
+          console.error(err);
+          resultBox.value = "サーバーに接続できませんでした。";
+        }
+      }
+
+      function copyText() {
+        const text = document.getElementById("resultText").value;
+        navigator.clipboard.writeText(text);
+        alert("口コミ文をコピーしました！");
+      }
+    </script>
+  </body>
+</html>

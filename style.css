@@ -1,0 +1,121 @@
+body {
+    font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+    background: #f7f7f7;
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .container {
+    max-width: 600px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .title {
+    text-align: center;
+    font-size: 1.6rem;
+    margin-bottom: 8px;
+  }
+  
+  .desc {
+    text-align: center;
+    font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 20px;
+  }
+  
+  .card {
+    margin-bottom: 32px;
+  }
+  
+  .section-title {
+    font-size: 1.1rem;
+    border-left: 4px solid #ff7b00;
+    padding-left: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .field {
+    display: block;
+    margin-bottom: 16px;
+  }
+  
+  .label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+  
+  .input,
+  .textarea,
+  .output {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 0.95rem;
+  }
+  
+  .button {
+    width: 100%;
+    padding: 12px;
+    background: #ff7b00;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  
+  .button:hover {
+    background: #ff9000;
+  }
+  
+  .result-card {
+    background: #fff9f2;
+  }
+  
+  .actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .sub-button,
+  .link-button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+  }
+  
+  .sub-button {
+    background: #ccc;
+    color: #000;
+  }
+  
+  .link-button {
+    background: #ff7b00;
+    color: #fff;
+  }
+  
+  .steps {
+    padding-left: 20px;
+  }
+  
+  .small {
+    font-size: 0.85rem;
+    color: #555;
+    margin-top: 8px;
+  }
+  
